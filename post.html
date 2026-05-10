@@ -18,8 +18,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14
 a{color:inherit;text-decoration:none;}
 button{cursor:pointer;font-family:var(--sans);}
 input,textarea,select{font-family:var(--sans);}
-#header{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--header-h);background:linear-gradient(90deg,#1e40af 0%,#2563eb 50%,#60a5fa 100%);display:flex;align-items:center;padding:0 1.5rem;gap:1.5rem;box-shadow:0 2px 6px rgba(0,0,0,0.2);}
-#img-banner{position:fixed;top:0;left:0;right:0;z-index:201;height:var(--img-banner-h);background:url('https://i.imgur.com/FX10Gkj.png') center/cover no-repeat;pointer-events:none;}#header{top:var(--img-banner-h);z-index:200;}#layout{padding-top:calc(var(--img-banner-h) + var(--header-h));}#sidebar{top:calc(var(--img-banner-h) + var(--header-h));}.header-logo{font-family:var(--serif);font-size:1.2rem;font-weight:700;color:#fff;letter-spacing:-0.01em;white-space:nowrap;}
+#header{position:sticky;top:0;left:0;right:0;z-index:200;height:var(--header-h);background:linear-gradient(90deg,#1e40af 0%,#2563eb 50%,#60a5fa 100%);display:flex;align-items:center;padding:0 1.5rem;gap:1.5rem;box-shadow:0 2px 6px rgba(0,0,0,0.2);}
+#img-banner{display:block;width:100%;height:var(--img-banner-h);background:url('https://i.imgur.com/FX10Gkj.png') center/cover no-repeat;cursor:pointer;}#layout{padding-top:0;}#sidebar{top:var(--header-h);}.header-logo{font-family:var(--serif);font-size:1.2rem;font-weight:700;color:#fff;letter-spacing:-0.01em;white-space:nowrap;}
 .header-search{flex:1;max-width:360px;display:flex;}
 .header-search input{flex:1;border:none;outline:none;padding:0.4rem 0.75rem;font-size:13px;background:rgba(255,255,255,0.15);color:#fff;border-radius:2px 0 0 2px;}
 .header-search input::placeholder{color:rgba(255,255,255,0.6);}
@@ -31,7 +31,7 @@ input,textarea,select{font-family:var(--sans);}
 .header-nav .btn-join{background:#fff;color:var(--primary);font-weight:500;}
 .header-nav .btn-join:hover{background:#eff6ff;}
 #layout{display:flex;padding-top:var(--header-h);min-height:100vh;}
-#sidebar{width:var(--sidebar-w);flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);position:fixed;top:var(--header-h);bottom:0;overflow-y:auto;}
+#sidebar{width:var(--sidebar-w);flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);position:sticky;top:var(--header-h);height:calc(100vh - var(--header-h));overflow-y:auto;align-self:flex-start;}
 .cafe-profile{padding:1.25rem 1rem;border-bottom:1px solid var(--border);text-align:center;}
 .cafe-thumb{width:64px;height:64px;background:var(--primary-light);border-radius:50%;margin:0 auto 0.6rem;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:1.4rem;font-weight:700;color:var(--primary);}
 .cafe-name{font-family:var(--serif);font-weight:700;font-size:0.95rem;color:var(--text);}
@@ -43,7 +43,7 @@ input,textarea,select{font-family:var(--sans);}
 .sidebar-menu li a:hover{background:var(--bg);color:var(--text);}
 .sidebar-menu li a.active{background:var(--primary-light);color:var(--primary);font-weight:500;border-left-color:var(--primary);}
 .sidebar-menu .count{font-size:11px;color:var(--text-muted);background:var(--bg);padding:0.05rem 0.4rem;border-radius:10px;}
-#main{margin-left:var(--sidebar-w);flex:1;padding:1.5rem;max-width:900px;}
+#main{flex:1;padding:1.5rem;max-width:900px;}
 .btn{display:inline-flex;align-items:center;border:none;border-radius:2px;font-size:13px;font-weight:500;padding:0.4rem 1rem;transition:all 0.15s;}
 .btn-primary{background:var(--primary);color:#fff;}
 .btn-primary:hover{background:#1d4ed8;}
@@ -291,7 +291,7 @@ tr.pinned:hover{background:#fef9c3;}
 </head>
 <body>
 
-<div id="img-banner"></div>
+<a href="index.html" id="img-banner"></a>
 <header id="header">
   <a href="index.html" class="header-logo">오버월드</a>
   <div class="header-search">
