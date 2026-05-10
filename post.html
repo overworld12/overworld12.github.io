@@ -12,14 +12,14 @@
   --bg:#f5f5f7;--surface:#ffffff;--border:#e2e2e8;--border-dark:#c8c8d0;
   --text:#1a1a2e;--text-sub:#6b6b80;--text-muted:#a0a0b0;--accent:#e11d48;
   --serif:'Noto Serif KR',serif;--sans:'Noto Sans KR',sans-serif;
-  --sidebar-w:200px;--header-h:52px;
+  --sidebar-w:200px;--header-h:52px;--img-banner-h:120px;
 }
 body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;font-weight:400;line-height:1.6;}
 a{color:inherit;text-decoration:none;}
 button{cursor:pointer;font-family:var(--sans);}
 input,textarea,select{font-family:var(--sans);}
-#header{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--header-h);background:url('https://i.imgur.com/FX10Gkj.png') center/cover no-repeat;display:flex;align-items:center;padding:0 1.5rem;gap:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,0.3);}
-.header-logo{font-family:var(--serif);font-size:1.2rem;font-weight:700;color:#fff;letter-spacing:-0.01em;white-space:nowrap;}
+#header{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--header-h);background:linear-gradient(90deg,#1e40af 0%,#2563eb 50%,#60a5fa 100%);display:flex;align-items:center;padding:0 1.5rem;gap:1.5rem;box-shadow:0 2px 6px rgba(0,0,0,0.2);}
+#img-banner{position:fixed;top:0;left:0;right:0;z-index:201;height:var(--img-banner-h);background:url('https://i.imgur.com/FX10Gkj.png') center/cover no-repeat;pointer-events:none;}#header{top:var(--img-banner-h);z-index:200;}#layout{padding-top:calc(var(--img-banner-h) + var(--header-h));}#sidebar{top:calc(var(--img-banner-h) + var(--header-h));}.header-logo{font-family:var(--serif);font-size:1.2rem;font-weight:700;color:#fff;letter-spacing:-0.01em;white-space:nowrap;}
 .header-search{flex:1;max-width:360px;display:flex;}
 .header-search input{flex:1;border:none;outline:none;padding:0.4rem 0.75rem;font-size:13px;background:rgba(255,255,255,0.15);color:#fff;border-radius:2px 0 0 2px;}
 .header-search input::placeholder{color:rgba(255,255,255,0.6);}
@@ -291,6 +291,7 @@ tr.pinned:hover{background:#fef9c3;}
 </head>
 <body>
 
+<div id="img-banner"></div>
 <header id="header">
   <a href="index.html" class="header-logo">오버월드</a>
   <div class="header-search">
