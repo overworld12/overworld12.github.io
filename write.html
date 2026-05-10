@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>글쓰기 — 오버월드</title>
+  <style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600;700&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --primary:#2563eb;--primary-light:#eff6ff;--primary-mid:#60a5fa;
+  --bg:#f5f5f7;--surface:#ffffff;--border:#e2e2e8;--border-dark:#c8c8d0;
+  --text:#1a1a2e;--text-sub:#6b6b80;--text-muted:#a0a0b0;--accent:#e11d48;
+  --serif:'Noto Serif KR',serif;--sans:'Noto Sans KR',sans-serif;
+  --sidebar-w:200px;--header-h:52px;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;font-weight:400;line-height:1.6;}
+a{color:inherit;text-decoration:none;}
+button{cursor:pointer;font-family:var(--sans);}
+input,textarea,select{font-family:var(--sans);}
+#header{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--header-h);background:url('https://i.imgur.com/FX10Gkj.png') center/cover no-repeat;display:flex;align-items:center;padding:0 1.5rem;gap:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,0.3);}
+.header-logo{font-family:var(--serif);font-size:1.2rem;font-weight:700;color:#fff;letter-spacing:-0.01em;white-space:nowrap;}
+.header-search{flex:1;max-width:360px;display:flex;}
+.header-search input{flex:1;border:none;outline:none;padding:0.4rem 0.75rem;font-size:13px;background:rgba(255,255,255,0.15);color:#fff;border-radius:2px 0 0 2px;}
+.header-search input::placeholder{color:rgba(255,255,255,0.6);}
+.header-search button{background:rgba(255,255,255,0.2);border:none;color:#fff;padding:0.4rem 0.75rem;font-size:13px;border-radius:0 2px 2px 0;transition:background 0.15s;}
+.header-search button:hover{background:rgba(255,255,255,0.3);}
+.header-nav{display:flex;gap:0.25rem;margin-left:auto;}
+.header-nav a,.header-nav button{color:rgba(255,255,255,0.85);background:none;border:none;font-size:13px;padding:0.35rem 0.75rem;border-radius:2px;transition:all 0.15s;white-space:nowrap;}
+.header-nav a:hover,.header-nav button:hover{background:rgba(255,255,255,0.15);color:#fff;}
+.header-nav .btn-join{background:#fff;color:var(--primary);font-weight:500;}
+.header-nav .btn-join:hover{background:#eff6ff;}
+#layout{display:flex;padding-top:var(--header-h);min-height:100vh;}
+#sidebar{width:var(--sidebar-w);flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);position:fixed;top:var(--header-h);bottom:0;overflow-y:auto;}
+.cafe-profile{padding:1.25rem 1rem;border-bottom:1px solid var(--border);text-align:center;}
+.cafe-thumb{width:64px;height:64px;background:var(--primary-light);border-radius:50%;margin:0 auto 0.6rem;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:1.4rem;font-weight:700;color:var(--primary);}
+.cafe-name{font-family:var(--serif);font-weight:700;font-size:0.95rem;color:var(--text);}
+.cafe-stats{display:flex;justify-content:center;gap:1rem;margin-top:0.5rem;font-size:11px;color:var(--text-sub);}
+.cafe-stat-num{font-weight:700;color:var(--primary);}
+.sidebar-menu-label{font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:0.06em;padding:0.75rem 1rem 0.3rem;}
+.sidebar-menu{list-style:none;}
+.sidebar-menu li a{display:flex;align-items:center;justify-content:space-between;padding:0.45rem 1rem;font-size:13px;color:var(--text-sub);transition:all 0.12s;border-left:2px solid transparent;}
+.sidebar-menu li a:hover{background:var(--bg);color:var(--text);}
+.sidebar-menu li a.active{background:var(--primary-light);color:var(--primary);font-weight:500;border-left-color:var(--primary);}
+.sidebar-menu .count{font-size:11px;color:var(--text-muted);background:var(--bg);padding:0.05rem 0.4rem;border-radius:10px;}
+#main{margin-left:var(--sidebar-w);flex:1;padding:1.5rem;max-width:900px;}
+.btn{display:inline-flex;align-items:center;border:none;border-radius:2px;font-size:13px;font-weight:500;padding:0.4rem 1rem;transition:all 0.15s;}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-primary:hover{background:#1d4ed8;}
+.btn-outline{background:none;border:1px solid var(--border-dark);color:var(--text-sub);}
+.btn-outline:hover{border-color:var(--primary);color:var(--primary);}
+.btn-sm{padding:0.25rem 0.65rem;font-size:12px;}
+.board-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;}
+.board-title{font-family:var(--serif);font-size:1.05rem;font-weight:700;color:var(--text);border-left:3px solid var(--primary);padding-left:0.6rem;}
+.post-table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--border);}
+.post-table thead th{background:#f9f9fb;border-bottom:1px solid var(--border);padding:0.5rem 0.75rem;font-size:12px;font-weight:500;color:var(--text-sub);text-align:left;white-space:nowrap;}
+.post-table tbody tr{border-bottom:1px solid var(--border);transition:background 0.1s;}
+.post-table tbody tr:last-child{border-bottom:none;}
+.post-table tbody tr:hover{background:#fafafa;}
+.post-table td{padding:0.55rem 0.75rem;font-size:13px;}
+.td-num{color:var(--text-muted);width:44px;text-align:center;font-size:12px;}
+.td-cat{width:72px;}
+.td-title{color:var(--text);}
+.td-title a:hover{color:var(--primary);text-decoration:underline;}
+.td-cmt{color:var(--accent);font-size:12px;padding-left:0.2rem;}
+.td-author{width:80px;color:var(--text-sub);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.td-date{width:68px;color:var(--text-muted);font-size:12px;white-space:nowrap;}
+.td-views{width:44px;color:var(--text-muted);font-size:12px;text-align:right;}
+.badge{display:inline-block;font-size:11px;font-weight:500;padding:0.1rem 0.4rem;border-radius:2px;}
+.badge-recruit{background:#eff6ff;color:var(--primary);}
+.badge-oc{background:#dcfce7;color:#166534;}
+.badge-free{background:#f3f4f6;color:#6b7280;}
+.badge-notice{background:#fee2e2;color:#991b1b;}
+.badge-closed{background:#f3f4f6;color:#9ca3af;}
+tr.pinned{background:#fefce8;}
+tr.pinned:hover{background:#fef9c3;}
+.pagination{display:flex;justify-content:center;align-items:center;gap:0.2rem;margin-top:1rem;}
+.page-btn{width:28px;height:28px;display:flex;align-items:center;justify-content:center;background:var(--surface);border:1px solid var(--border);font-size:12px;color:var(--text-sub);border-radius:2px;transition:all 0.12s;}
+.page-btn:hover{border-color:var(--primary);color:var(--primary);}
+.page-btn.active{background:var(--primary);border-color:var(--primary);color:#fff;}
+.form-row{margin-bottom:0.85rem;}
+.form-label{display:block;font-size:12px;font-weight:500;color:var(--text-sub);margin-bottom:0.3rem;}
+.form-input,.form-select,.form-textarea{width:100%;border:1px solid var(--border-dark);border-radius:2px;padding:0.45rem 0.65rem;font-size:13px;color:var(--text);background:var(--surface);outline:none;transition:border-color 0.15s;}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--primary);box-shadow:0 0 0 2px rgba(37,99,235,0.1);}
+.form-input::placeholder,.form-textarea::placeholder{color:var(--text-muted);}
+.form-textarea{resize:vertical;line-height:1.65;}
+</style>
+
+  <style>
+    .write-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 1.25rem;
+    }
+
+    .recruit-extra {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--primary);
+      padding: 1rem;
+      margin-bottom: 0.85rem;
+      display: none;
+    }
+    .recruit-extra.visible { display: block; }
+    .recruit-extra-title {
+      font-size: 11px; font-weight: 700; color: var(--primary);
+      margin-bottom: 0.65rem; letter-spacing: 0.04em;
+    }
+    .recruit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem 1rem; }
+
+    .toolbar {
+      display: flex; gap: 2px; flex-wrap: wrap;
+      background: var(--bg); border: 1px solid var(--border-dark);
+      border-bottom: none; padding: 0.3rem 0.4rem;
+    }
+    .tool-btn {
+      background: none; border: 1px solid transparent;
+      color: var(--text-sub); font-size: 12px;
+      padding: 0.2rem 0.45rem; border-radius: 2px; transition: all 0.12s;
+    }
+    .tool-btn:hover { background: var(--surface); border-color: var(--border); color: var(--text); }
+    .tool-sep { width: 1px; background: var(--border); margin: 2px 3px; }
+
+    .editor-area {
+      width: 100%; min-height: 300px;
+      border: 1px solid var(--border-dark); border-radius: 0 0 2px 2px;
+      padding: 0.75rem; font-size: 14px; line-height: 1.75;
+      resize: vertical; outline: none; background: var(--surface);
+      transition: border-color 0.15s;
+    }
+    .editor-area:focus { border-color: var(--primary); }
+    .editor-area::placeholder { color: var(--text-muted); }
+
+    /* 태그 입력 */
+    .tag-wrap {
+      display: flex; flex-wrap: wrap; gap: 0.3rem; align-items: center;
+      border: 1px solid var(--border-dark); border-radius: 2px;
+      padding: 0.3rem 0.5rem; min-height: 36px;
+      background: var(--surface); cursor: text;
+      transition: border-color 0.15s;
+    }
+    .tag-wrap:focus-within { border-color: var(--primary); }
+    .tag-chip {
+      background: var(--primary-light); color: var(--primary);
+      font-size: 12px; padding: 0.1rem 0.45rem; border-radius: 2px;
+      display: flex; align-items: center; gap: 0.3rem;
+    }
+    .tag-chip button {
+      background: none; border: none; color: var(--primary);
+      font-size: 13px; padding: 0; line-height: 1;
+    }
+    .tag-input {
+      border: none; outline: none; font-size: 13px;
+      background: none; flex: 1; min-width: 80px;
+    }
+    .tag-input::placeholder { color: var(--text-muted); }
+
+    .form-footer {
+      display: flex; justify-content: flex-end; gap: 0.5rem;
+      margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+
+<header id="header">
+  <a href="index.html" class="header-logo">오버월드</a>
+  <div class="header-search">
+    <input type="text" placeholder="카페 내 검색" />
+    <button>검색</button>
+  </div>
+  <nav class="header-nav">
+    <a href="board.html">게시판</a>
+    <a href="login.html">로그인</a>
+    <a href="login.html" class="btn-join">회원가입</a>
+  </nav>
+</header>
+
+<div id="layout">
+  <aside id="sidebar">
+    <div class="cafe-profile">
+      <div class="cafe-thumb">오</div>
+      <div class="cafe-name">오버월드</div>
+      <div class="cafe-stats">
+        <div><div class="cafe-stat-num">248</div><div>게시글</div></div>
+        <div><div class="cafe-stat-num">142</div><div>멤버</div></div>
+      </div>
+    </div>
+    <div class="sidebar-menu-label">게시판</div>
+    <ul class="sidebar-menu">
+      <li><a href="index.html">홈</a></li>
+      <li><a href="board.html?cat=all">전체 글 <span class="count">248</span></a></li>
+      <li><a href="board.html?cat=notice">공지사항 <span class="count">8</span></a></li>
+      <li><a href="board.html?cat=recruit">역극 모집 <span class="count">91</span></a></li>
+      <li><a href="board.html?cat=oc">자캐 소개 <span class="count">67</span></a></li>
+      <li><a href="board.html?cat=free">자유 게시판 <span class="count">82</span></a></li>
+    </ul>
+    <div class="sidebar-menu-label">커뮤니티</div>
+    <ul class="sidebar-menu">
+      <li><a href="#">이용 규칙</a></li>
+      <li><a href="#">운영진 소개</a></li>
+    </ul>
+  </aside>
+
+  <main id="main">
+    <div class="board-top">
+      <div class="board-title">글쓰기</div>
+    </div>
+
+    <div class="write-wrap">
+      <!-- 게시판 선택 -->
+      <div class="form-row">
+        <label class="form-label">게시판 *</label>
+        <select class="form-select" id="boardSelect" onchange="toggleRecruit()" style="max-width:200px;">
+          <option value="">선택하세요</option>
+          <option value="recruit">역극 모집</option>
+          <option value="oc">자캐 소개</option>
+          <option value="free">자유 게시판</option>
+        </select>
+      </div>
+
+      <!-- 역극 모집 전용 -->
+      <div class="recruit-extra" id="recruitExtra">
+        <div class="recruit-extra-title">모집 상세 정보</div>
+        <div class="recruit-grid">
+          <div class="form-row">
+            <label class="form-label">장르</label>
+            <input class="form-input" type="text" placeholder="예: 현대, 판타지, SF" />
+          </div>
+          <div class="form-row">
+            <label class="form-label">구성</label>
+            <select class="form-select">
+              <option value="">선택</option>
+              <option>1:1</option><option>2:2</option><option>3인 이상</option><option>미정</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label class="form-label">분량</label>
+            <select class="form-select">
+              <option value="">선택</option>
+              <option>단편 (~30회)</option><option>중편 (30~100회)</option><option>장편 (100회+)</option><option>미정</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label class="form-label">19+ 여부</label>
+            <select class="form-select">
+              <option>불가</option><option>가능 (성인 인증 필요)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- 제목 -->
+      <div class="form-row">
+        <label class="form-label">제목 *</label>
+        <input class="form-input" type="text" placeholder="제목을 입력하세요" maxlength="100" />
+      </div>
+
+      <!-- 본문 -->
+      <div class="form-row">
+        <label class="form-label">본문 *</label>
+        <div class="toolbar">
+          <button class="tool-btn"><b>B</b></button>
+          <button class="tool-btn"><i>I</i></button>
+          <button class="tool-btn"><u>U</u></button>
+          <div class="tool-sep"></div>
+          <button class="tool-btn">인용</button>
+          <button class="tool-btn">구분선</button>
+        </div>
+        <textarea class="editor-area" placeholder="내용을 입력하세요.&#10;&#10;역극 모집이라면 — 장르, 세계관, 캐릭터 소개, 원하는 구도, 연락 방법을 적어주세요."></textarea>
+      </div>
+
+      <!-- 태그 -->
+      <div class="form-row">
+        <label class="form-label">태그</label>
+        <div class="tag-wrap" id="tagWrap" onclick="document.getElementById('tagInput').focus()">
+          <span class="tag-chip">#현대판타지 <button onclick="this.parentElement.remove()">×</button></span>
+          <input class="tag-input" id="tagInput" type="text" placeholder="태그 입력 후 Enter" onkeydown="addTag(event)" />
+        </div>
+      </div>
+
+      <div class="form-footer">
+        <button class="btn btn-outline" onclick="history.back()">취소</button>
+        <button class="btn btn-primary" onclick="location.href='post.html'">등록</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  function toggleRecruit() {
+    const val = document.getElementById('boardSelect').value;
+    document.getElementById('recruitExtra').classList.toggle('visible', val === 'recruit');
+  }
+  function addTag(e) {
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    const input = document.getElementById('tagInput');
+    const val = input.value.trim().replace(/^#/, '');
+    if (!val) return;
+    const chip = document.createElement('span');
+    chip.className = 'tag-chip';
+    chip.innerHTML = `#${val} <button onclick="this.parentElement.remove()">×</button>`;
+    document.getElementById('tagWrap').insertBefore(chip, input);
+    input.value = '';
+  }
+</script>
+</body>
+</html>

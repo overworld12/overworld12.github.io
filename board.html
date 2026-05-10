@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>게시판 — 오버월드</title>
+  <style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600;700&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --primary:#2563eb;--primary-light:#eff6ff;--primary-mid:#60a5fa;
+  --bg:#f5f5f7;--surface:#ffffff;--border:#e2e2e8;--border-dark:#c8c8d0;
+  --text:#1a1a2e;--text-sub:#6b6b80;--text-muted:#a0a0b0;--accent:#e11d48;
+  --serif:'Noto Serif KR',serif;--sans:'Noto Sans KR',sans-serif;
+  --sidebar-w:200px;--header-h:52px;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;font-weight:400;line-height:1.6;}
+a{color:inherit;text-decoration:none;}
+button{cursor:pointer;font-family:var(--sans);}
+input,textarea,select{font-family:var(--sans);}
+#header{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--header-h);background:url('https://i.imgur.com/FX10Gkj.png') center/cover no-repeat;display:flex;align-items:center;padding:0 1.5rem;gap:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,0.3);}
+.header-logo{font-family:var(--serif);font-size:1.2rem;font-weight:700;color:#fff;letter-spacing:-0.01em;white-space:nowrap;}
+.header-search{flex:1;max-width:360px;display:flex;}
+.header-search input{flex:1;border:none;outline:none;padding:0.4rem 0.75rem;font-size:13px;background:rgba(255,255,255,0.15);color:#fff;border-radius:2px 0 0 2px;}
+.header-search input::placeholder{color:rgba(255,255,255,0.6);}
+.header-search button{background:rgba(255,255,255,0.2);border:none;color:#fff;padding:0.4rem 0.75rem;font-size:13px;border-radius:0 2px 2px 0;transition:background 0.15s;}
+.header-search button:hover{background:rgba(255,255,255,0.3);}
+.header-nav{display:flex;gap:0.25rem;margin-left:auto;}
+.header-nav a,.header-nav button{color:rgba(255,255,255,0.85);background:none;border:none;font-size:13px;padding:0.35rem 0.75rem;border-radius:2px;transition:all 0.15s;white-space:nowrap;}
+.header-nav a:hover,.header-nav button:hover{background:rgba(255,255,255,0.15);color:#fff;}
+.header-nav .btn-join{background:#fff;color:var(--primary);font-weight:500;}
+.header-nav .btn-join:hover{background:#eff6ff;}
+#layout{display:flex;padding-top:var(--header-h);min-height:100vh;}
+#sidebar{width:var(--sidebar-w);flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);position:fixed;top:var(--header-h);bottom:0;overflow-y:auto;}
+.cafe-profile{padding:1.25rem 1rem;border-bottom:1px solid var(--border);text-align:center;}
+.cafe-thumb{width:64px;height:64px;background:var(--primary-light);border-radius:50%;margin:0 auto 0.6rem;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:1.4rem;font-weight:700;color:var(--primary);}
+.cafe-name{font-family:var(--serif);font-weight:700;font-size:0.95rem;color:var(--text);}
+.cafe-stats{display:flex;justify-content:center;gap:1rem;margin-top:0.5rem;font-size:11px;color:var(--text-sub);}
+.cafe-stat-num{font-weight:700;color:var(--primary);}
+.sidebar-menu-label{font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:0.06em;padding:0.75rem 1rem 0.3rem;}
+.sidebar-menu{list-style:none;}
+.sidebar-menu li a{display:flex;align-items:center;justify-content:space-between;padding:0.45rem 1rem;font-size:13px;color:var(--text-sub);transition:all 0.12s;border-left:2px solid transparent;}
+.sidebar-menu li a:hover{background:var(--bg);color:var(--text);}
+.sidebar-menu li a.active{background:var(--primary-light);color:var(--primary);font-weight:500;border-left-color:var(--primary);}
+.sidebar-menu .count{font-size:11px;color:var(--text-muted);background:var(--bg);padding:0.05rem 0.4rem;border-radius:10px;}
+#main{margin-left:var(--sidebar-w);flex:1;padding:1.5rem;max-width:900px;}
+.btn{display:inline-flex;align-items:center;border:none;border-radius:2px;font-size:13px;font-weight:500;padding:0.4rem 1rem;transition:all 0.15s;}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-primary:hover{background:#1d4ed8;}
+.btn-outline{background:none;border:1px solid var(--border-dark);color:var(--text-sub);}
+.btn-outline:hover{border-color:var(--primary);color:var(--primary);}
+.btn-sm{padding:0.25rem 0.65rem;font-size:12px;}
+.board-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;}
+.board-title{font-family:var(--serif);font-size:1.05rem;font-weight:700;color:var(--text);border-left:3px solid var(--primary);padding-left:0.6rem;}
+.post-table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--border);}
+.post-table thead th{background:#f9f9fb;border-bottom:1px solid var(--border);padding:0.5rem 0.75rem;font-size:12px;font-weight:500;color:var(--text-sub);text-align:left;white-space:nowrap;}
+.post-table tbody tr{border-bottom:1px solid var(--border);transition:background 0.1s;}
+.post-table tbody tr:last-child{border-bottom:none;}
+.post-table tbody tr:hover{background:#fafafa;}
+.post-table td{padding:0.55rem 0.75rem;font-size:13px;}
+.td-num{color:var(--text-muted);width:44px;text-align:center;font-size:12px;}
+.td-cat{width:72px;}
+.td-title{color:var(--text);}
+.td-title a:hover{color:var(--primary);text-decoration:underline;}
+.td-cmt{color:var(--accent);font-size:12px;padding-left:0.2rem;}
+.td-author{width:80px;color:var(--text-sub);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.td-date{width:68px;color:var(--text-muted);font-size:12px;white-space:nowrap;}
+.td-views{width:44px;color:var(--text-muted);font-size:12px;text-align:right;}
+.badge{display:inline-block;font-size:11px;font-weight:500;padding:0.1rem 0.4rem;border-radius:2px;}
+.badge-recruit{background:#eff6ff;color:var(--primary);}
+.badge-oc{background:#dcfce7;color:#166534;}
+.badge-free{background:#f3f4f6;color:#6b7280;}
+.badge-notice{background:#fee2e2;color:#991b1b;}
+.badge-closed{background:#f3f4f6;color:#9ca3af;}
+tr.pinned{background:#fefce8;}
+tr.pinned:hover{background:#fef9c3;}
+.pagination{display:flex;justify-content:center;align-items:center;gap:0.2rem;margin-top:1rem;}
+.page-btn{width:28px;height:28px;display:flex;align-items:center;justify-content:center;background:var(--surface);border:1px solid var(--border);font-size:12px;color:var(--text-sub);border-radius:2px;transition:all 0.12s;}
+.page-btn:hover{border-color:var(--primary);color:var(--primary);}
+.page-btn.active{background:var(--primary);border-color:var(--primary);color:#fff;}
+.form-row{margin-bottom:0.85rem;}
+.form-label{display:block;font-size:12px;font-weight:500;color:var(--text-sub);margin-bottom:0.3rem;}
+.form-input,.form-select,.form-textarea{width:100%;border:1px solid var(--border-dark);border-radius:2px;padding:0.45rem 0.65rem;font-size:13px;color:var(--text);background:var(--surface);outline:none;transition:border-color 0.15s;}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--primary);box-shadow:0 0 0 2px rgba(37,99,235,0.1);}
+.form-input::placeholder,.form-textarea::placeholder{color:var(--text-muted);}
+.form-textarea{resize:vertical;line-height:1.65;}
+</style>
+
+  <style>
+    .filter-bar {
+      display: flex; gap: 0.3rem; margin-bottom: 0.75rem; flex-wrap: wrap;
+    }
+    .filter-btn {
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--text-sub); font-size: 12px;
+      padding: 0.25rem 0.65rem; border-radius: 2px; transition: all 0.12s;
+    }
+    .filter-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .filter-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+    .search-bar { display: flex; gap: 0.4rem; margin-bottom: 0.75rem; }
+    .search-bar input {
+      flex: 1; border: 1px solid var(--border-dark); border-radius: 2px;
+      padding: 0.4rem 0.65rem; font-size: 13px; outline: none;
+      transition: border-color 0.15s;
+    }
+    .search-bar input:focus { border-color: var(--primary); }
+  </style>
+</head>
+<body>
+
+<header id="header">
+  <a href="index.html" class="header-logo">오버월드</a>
+  <div class="header-search">
+    <input type="text" placeholder="카페 내 검색" />
+    <button>검색</button>
+  </div>
+  <nav class="header-nav">
+    <a href="board.html">게시판</a>
+    <a href="login.html">로그인</a>
+    <a href="login.html" class="btn-join">회원가입</a>
+  </nav>
+</header>
+
+<div id="layout">
+  <aside id="sidebar">
+    <div class="cafe-profile">
+      <div class="cafe-thumb">오</div>
+      <div class="cafe-name">오버월드</div>
+      <div class="cafe-stats">
+        <div><div class="cafe-stat-num">248</div><div>게시글</div></div>
+        <div><div class="cafe-stat-num">142</div><div>멤버</div></div>
+      </div>
+    </div>
+    <div class="sidebar-menu-label">게시판</div>
+    <ul class="sidebar-menu">
+      <li><a href="index.html">홈</a></li>
+      <li><a href="board.html?cat=all" class="active">전체 글 <span class="count">248</span></a></li>
+      <li><a href="board.html?cat=notice">공지사항 <span class="count">8</span></a></li>
+      <li><a href="board.html?cat=recruit">역극 모집 <span class="count">91</span></a></li>
+      <li><a href="board.html?cat=oc">자캐 소개 <span class="count">67</span></a></li>
+      <li><a href="board.html?cat=free">자유 게시판 <span class="count">82</span></a></li>
+    </ul>
+    <div class="sidebar-menu-label">커뮤니티</div>
+    <ul class="sidebar-menu">
+      <li><a href="#">이용 규칙</a></li>
+      <li><a href="#">운영진 소개</a></li>
+    </ul>
+  </aside>
+
+  <main id="main">
+    <div class="board-top">
+      <div class="board-title">전체 글</div>
+      <a href="write.html" class="btn btn-primary btn-sm">글쓰기</a>
+    </div>
+
+    <div class="filter-bar">
+      <button class="filter-btn active">전체</button>
+      <button class="filter-btn">모집중</button>
+      <button class="filter-btn">마감</button>
+      <button class="filter-btn">1:1</button>
+      <button class="filter-btn">2:2+</button>
+    </div>
+
+    <div class="search-bar">
+      <input type="text" placeholder="제목 또는 내용 검색" />
+      <button class="btn btn-outline btn-sm">검색</button>
+    </div>
+
+    <table class="post-table">
+      <thead>
+        <tr>
+          <th class="td-num">번호</th>
+          <th class="td-cat">구분</th>
+          <th>제목</th>
+          <th class="td-author">작성자</th>
+          <th class="td-date">날짜</th>
+          <th class="td-views">조회</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="pinned">
+          <td class="td-num">📌</td>
+          <td class="td-cat"><span class="badge badge-notice">공지</span></td>
+          <td class="td-title"><a href="post.html">★ 6월 정기 역극 이벤트 안내</a></td>
+          <td class="td-author">운영진</td>
+          <td class="td-date">05.07</td>
+          <td class="td-views">382</td>
+        </tr>
+        <tr class="pinned">
+          <td class="td-num">📌</td>
+          <td class="td-cat"><span class="badge badge-notice">공지</span></td>
+          <td class="td-title"><a href="post.html">커뮤니티 이용 규칙 전문 (필독)</a></td>
+          <td class="td-author">운영진</td>
+          <td class="td-date">04.01</td>
+          <td class="td-views">1.2k</td>
+        </tr>
+        <tr>
+          <td class="td-num">248</td>
+          <td class="td-cat"><span class="badge badge-recruit">모집</span></td>
+          <td class="td-title"><a href="post.html">[현판] 형사×탐정 2:2 단편 역극 구합니다</a> <span class="td-cmt">[3]</span></td>
+          <td class="td-author">달빛수선</td>
+          <td class="td-date">방금</td>
+          <td class="td-views">14</td>
+        </tr>
+        <tr>
+          <td class="td-num">247</td>
+          <td class="td-cat"><span class="badge badge-oc">자캐</span></td>
+          <td class="td-title"><a href="post.html">자캐 소개 / 사진작가 오린 23세</a> <span class="td-cmt">[7]</span></td>
+          <td class="td-author">은빛필름</td>
+          <td class="td-date">2시간</td>
+          <td class="td-views">89</td>
+        </tr>
+        <tr>
+          <td class="td-num">246</td>
+          <td class="td-cat"><span class="badge badge-free">자유</span></td>
+          <td class="td-title"><a href="post.html">역극 중 갑자기 캐릭터에 꽂혀버린 순간 공유</a> <span class="td-cmt">[21]</span></td>
+          <td class="td-author">초코마카롱</td>
+          <td class="td-date">5시간</td>
+          <td class="td-views">203</td>
+        </tr>
+        <tr>
+          <td class="td-num">245</td>
+          <td class="td-cat"><span class="badge badge-recruit">모집</span></td>
+          <td class="td-title"><a href="post.html">[학원] 우등생×문제아 장편 1:1 구합니다</a> <span class="td-cmt">[5]</span></td>
+          <td class="td-author">낙서장</td>
+          <td class="td-date">어제</td>
+          <td class="td-views">156</td>
+        </tr>
+        <tr>
+          <td class="td-num">244</td>
+          <td class="td-cat"><span class="badge badge-free">자유</span></td>
+          <td class="td-title"><a href="post.html">처음으로 역극 참여했어요 — 후기</a> <span class="td-cmt">[12]</span></td>
+          <td class="td-author">새싹토끼</td>
+          <td class="td-date">어제</td>
+          <td class="td-views">178</td>
+        </tr>
+        <tr>
+          <td class="td-num">243</td>
+          <td class="td-cat"><span class="badge badge-oc">자캐</span></td>
+          <td class="td-title"><a href="post.html">자캐 소개 / 형사 하준 30대 남캐</a> <span class="td-cmt">[4]</span></td>
+          <td class="td-author">먹구름</td>
+          <td class="td-date">어제</td>
+          <td class="td-views">91</td>
+        </tr>
+        <tr>
+          <td class="td-num">242</td>
+          <td class="td-cat"><span class="badge badge-closed">마감</span></td>
+          <td class="td-title"><a href="post.html">[SF] 우주 배경 의사×파일럿 모집 완료</a> <span class="td-cmt">[9]</span></td>
+          <td class="td-author">성운여행자</td>
+          <td class="td-date">2일전</td>
+          <td class="td-views">220</td>
+        </tr>
+        <tr>
+          <td class="td-num">241</td>
+          <td class="td-cat"><span class="badge badge-free">자유</span></td>
+          <td class="td-title"><a href="post.html">자캐 세계관 구성할 때 도움 되는 것들 공유</a> <span class="td-cmt">[18]</span></td>
+          <td class="td-author">세계수</td>
+          <td class="td-date">3일전</td>
+          <td class="td-views">445</td>
+        </tr>
+        <tr>
+          <td class="td-num">240</td>
+          <td class="td-cat"><span class="badge badge-recruit">모집</span></td>
+          <td class="td-title"><a href="post.html">[판타지] 귀족가×평민 신분 차 관계극</a> <span class="td-cmt">[2]</span></td>
+          <td class="td-author">은장미</td>
+          <td class="td-date">3일전</td>
+          <td class="td-views">134</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="pagination">
+      <button class="page-btn">«</button>
+      <button class="page-btn active">1</button>
+      <button class="page-btn">2</button>
+      <button class="page-btn">3</button>
+      <button class="page-btn">4</button>
+      <button class="page-btn">5</button>
+      <button class="page-btn">»</button>
+    </div>
+  </main>
+</div>
+
+<script>
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

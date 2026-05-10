@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>오버월드 — 자캐 역극 커뮤니티</title>
+  <style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600;700&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --primary:#2563eb;--primary-light:#eff6ff;--primary-mid:#60a5fa;
+  --bg:#f5f5f7;--surface:#ffffff;--border:#e2e2e8;--border-dark:#c8c8d0;
+  --text:#1a1a2e;--text-sub:#6b6b80;--text-muted:#a0a0b0;--accent:#e11d48;
+  --serif:'Noto Serif KR',serif;--sans:'Noto Sans KR',sans-serif;
+  --sidebar-w:200px;--header-h:52px;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;font-weight:400;line-height:1.6;}
+a{color:inherit;text-decoration:none;}
+button{cursor:pointer;font-family:var(--sans);}
+input,textarea,select{font-family:var(--sans);}
+#header{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--header-h);background:url('https://i.imgur.com/FX10Gkj.png') center/cover no-repeat;display:flex;align-items:center;padding:0 1.5rem;gap:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,0.3);}
+.header-logo{font-family:var(--serif);font-size:1.2rem;font-weight:700;color:#fff;letter-spacing:-0.01em;white-space:nowrap;}
+.header-search{flex:1;max-width:360px;display:flex;}
+.header-search input{flex:1;border:none;outline:none;padding:0.4rem 0.75rem;font-size:13px;background:rgba(255,255,255,0.15);color:#fff;border-radius:2px 0 0 2px;}
+.header-search input::placeholder{color:rgba(255,255,255,0.6);}
+.header-search button{background:rgba(255,255,255,0.2);border:none;color:#fff;padding:0.4rem 0.75rem;font-size:13px;border-radius:0 2px 2px 0;transition:background 0.15s;}
+.header-search button:hover{background:rgba(255,255,255,0.3);}
+.header-nav{display:flex;gap:0.25rem;margin-left:auto;}
+.header-nav a,.header-nav button{color:rgba(255,255,255,0.85);background:none;border:none;font-size:13px;padding:0.35rem 0.75rem;border-radius:2px;transition:all 0.15s;white-space:nowrap;}
+.header-nav a:hover,.header-nav button:hover{background:rgba(255,255,255,0.15);color:#fff;}
+.header-nav .btn-join{background:#fff;color:var(--primary);font-weight:500;}
+.header-nav .btn-join:hover{background:#eff6ff;}
+#layout{display:flex;padding-top:var(--header-h);min-height:100vh;}
+#sidebar{width:var(--sidebar-w);flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);position:fixed;top:var(--header-h);bottom:0;overflow-y:auto;}
+.cafe-profile{padding:1.25rem 1rem;border-bottom:1px solid var(--border);text-align:center;}
+.cafe-thumb{width:64px;height:64px;background:var(--primary-light);border-radius:50%;margin:0 auto 0.6rem;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:1.4rem;font-weight:700;color:var(--primary);}
+.cafe-name{font-family:var(--serif);font-weight:700;font-size:0.95rem;color:var(--text);}
+.cafe-stats{display:flex;justify-content:center;gap:1rem;margin-top:0.5rem;font-size:11px;color:var(--text-sub);}
+.cafe-stat-num{font-weight:700;color:var(--primary);}
+.sidebar-menu-label{font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:0.06em;padding:0.75rem 1rem 0.3rem;}
+.sidebar-menu{list-style:none;}
+.sidebar-menu li a{display:flex;align-items:center;justify-content:space-between;padding:0.45rem 1rem;font-size:13px;color:var(--text-sub);transition:all 0.12s;border-left:2px solid transparent;}
+.sidebar-menu li a:hover{background:var(--bg);color:var(--text);}
+.sidebar-menu li a.active{background:var(--primary-light);color:var(--primary);font-weight:500;border-left-color:var(--primary);}
+.sidebar-menu .count{font-size:11px;color:var(--text-muted);background:var(--bg);padding:0.05rem 0.4rem;border-radius:10px;}
+#main{margin-left:var(--sidebar-w);flex:1;padding:1.5rem;max-width:900px;}
+.btn{display:inline-flex;align-items:center;border:none;border-radius:2px;font-size:13px;font-weight:500;padding:0.4rem 1rem;transition:all 0.15s;}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-primary:hover{background:#1d4ed8;}
+.btn-outline{background:none;border:1px solid var(--border-dark);color:var(--text-sub);}
+.btn-outline:hover{border-color:var(--primary);color:var(--primary);}
+.btn-sm{padding:0.25rem 0.65rem;font-size:12px;}
+.board-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;}
+.board-title{font-family:var(--serif);font-size:1.05rem;font-weight:700;color:var(--text);border-left:3px solid var(--primary);padding-left:0.6rem;}
+.post-table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--border);}
+.post-table thead th{background:#f9f9fb;border-bottom:1px solid var(--border);padding:0.5rem 0.75rem;font-size:12px;font-weight:500;color:var(--text-sub);text-align:left;white-space:nowrap;}
+.post-table tbody tr{border-bottom:1px solid var(--border);transition:background 0.1s;}
+.post-table tbody tr:last-child{border-bottom:none;}
+.post-table tbody tr:hover{background:#fafafa;}
+.post-table td{padding:0.55rem 0.75rem;font-size:13px;}
+.td-num{color:var(--text-muted);width:44px;text-align:center;font-size:12px;}
+.td-cat{width:72px;}
+.td-title{color:var(--text);}
+.td-title a:hover{color:var(--primary);text-decoration:underline;}
+.td-cmt{color:var(--accent);font-size:12px;padding-left:0.2rem;}
+.td-author{width:80px;color:var(--text-sub);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.td-date{width:68px;color:var(--text-muted);font-size:12px;white-space:nowrap;}
+.td-views{width:44px;color:var(--text-muted);font-size:12px;text-align:right;}
+.badge{display:inline-block;font-size:11px;font-weight:500;padding:0.1rem 0.4rem;border-radius:2px;}
+.badge-recruit{background:#eff6ff;color:var(--primary);}
+.badge-oc{background:#dcfce7;color:#166534;}
+.badge-free{background:#f3f4f6;color:#6b7280;}
+.badge-notice{background:#fee2e2;color:#991b1b;}
+.badge-closed{background:#f3f4f6;color:#9ca3af;}
+tr.pinned{background:#fefce8;}
+tr.pinned:hover{background:#fef9c3;}
+.pagination{display:flex;justify-content:center;align-items:center;gap:0.2rem;margin-top:1rem;}
+.page-btn{width:28px;height:28px;display:flex;align-items:center;justify-content:center;background:var(--surface);border:1px solid var(--border);font-size:12px;color:var(--text-sub);border-radius:2px;transition:all 0.12s;}
+.page-btn:hover{border-color:var(--primary);color:var(--primary);}
+.page-btn.active{background:var(--primary);border-color:var(--primary);color:#fff;}
+.form-row{margin-bottom:0.85rem;}
+.form-label{display:block;font-size:12px;font-weight:500;color:var(--text-sub);margin-bottom:0.3rem;}
+.form-input,.form-select,.form-textarea{width:100%;border:1px solid var(--border-dark);border-radius:2px;padding:0.45rem 0.65rem;font-size:13px;color:var(--text);background:var(--surface);outline:none;transition:border-color 0.15s;}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--primary);box-shadow:0 0 0 2px rgba(37,99,235,0.1);}
+.form-input::placeholder,.form-textarea::placeholder{color:var(--text-muted);}
+.form-textarea{resize:vertical;line-height:1.65;}
+</style>
+
+  <style>
+    .welcome-banner {
+      position: relative;
+      background: url('https://i.imgur.com/M0OsvQt.png') center/cover no-repeat;
+      color: #fff;
+      padding: 2.5rem 1.75rem;
+      border-radius: 4px;
+      margin-bottom: 1.25rem;
+      overflow: hidden;
+    }
+    .welcome-banner::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(10, 18, 35, 0.45);
+    }
+    .welcome-banner-inner { position: relative; z-index: 1; }
+    .welcome-banner h1 {
+      font-family: var(--serif);
+      font-size: 1.5rem; font-weight: 700;
+      margin-bottom: 0.4rem;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.5);
+    }
+    .welcome-banner p {
+      font-size: 13px; opacity: 0.9; line-height: 1.7;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+    }
+    .welcome-banner .btn-join-main {
+      display: inline-block; margin-top: 1rem;
+      background: #fff; color: var(--primary);
+      font-weight: 700; font-size: 13px;
+      padding: 0.45rem 1.25rem; border-radius: 2px;
+      transition: background 0.15s;
+    }
+    .welcome-banner .btn-join-main:hover { background: #eff6ff; }
+
+    .stats-bar {
+      display: flex; margin-bottom: 1rem;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 2px;
+    }
+    .stat-item {
+      flex: 1; padding: 0.75rem 1rem;
+      border-right: 1px solid var(--border); text-align: center;
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-num { font-family: var(--serif); font-size: 1.3rem; font-weight: 700; color: var(--primary); }
+    .stat-label { font-size: 11px; color: var(--text-muted); margin-top: 0.1rem; }
+
+    .notice-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 2px; margin-bottom: 1rem;
+    }
+    .card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.65rem 0.9rem; border-bottom: 1px solid var(--border);
+    }
+    .card-title {
+      font-size: 13px; font-weight: 700; color: var(--text);
+      padding-left: 0.5rem;
+    }
+    .card-title.accent { border-left: 2px solid var(--accent); }
+    .card-title.primary { border-left: 2px solid var(--primary); }
+    .card-more { font-size: 11px; color: var(--text-muted); transition: color 0.12s; }
+    .card-more:hover { color: var(--primary); }
+
+    .card-list { list-style: none; }
+    .card-list li a {
+      display: flex; align-items: baseline; justify-content: space-between;
+      padding: 0.48rem 0.9rem; font-size: 13px; color: var(--text);
+      border-bottom: 1px solid var(--border); transition: background 0.1s;
+    }
+    .card-list li:last-child a { border-bottom: none; }
+    .card-list li a:hover { background: var(--bg); }
+    .card-list .tt { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 0.5rem; }
+    .card-list .dt { font-size: 11px; color: var(--text-muted); white-space: nowrap; }
+    .card-list .cmt { color: var(--accent); font-size: 11px; }
+
+    .index-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .board-card { background: var(--surface); border: 1px solid var(--border); border-radius: 2px; }
+  </style>
+</head>
+<body>
+
+<header id="header">
+  <a href="index.html" class="header-logo">오버월드</a>
+  <div class="header-search">
+    <input type="text" placeholder="카페 내 검색" />
+    <button>검색</button>
+  </div>
+  <nav class="header-nav">
+    <a href="board.html">게시판</a>
+    <a href="login.html">로그인</a>
+    <a href="login.html" class="btn-join">회원가입</a>
+  </nav>
+</header>
+
+<div id="layout">
+  <aside id="sidebar">
+    <div class="cafe-profile">
+      <div class="cafe-thumb">오</div>
+      <div class="cafe-name">오버월드</div>
+      <div class="cafe-stats">
+        <div><div class="cafe-stat-num">248</div><div>게시글</div></div>
+        <div><div class="cafe-stat-num">142</div><div>멤버</div></div>
+      </div>
+    </div>
+    <div class="sidebar-menu-label">게시판</div>
+    <ul class="sidebar-menu">
+      <li><a href="index.html" class="active">홈</a></li>
+      <li><a href="board.html?cat=all">전체 글 <span class="count">248</span></a></li>
+      <li><a href="board.html?cat=notice">공지사항 <span class="count">8</span></a></li>
+      <li><a href="board.html?cat=recruit">역극 모집 <span class="count">91</span></a></li>
+      <li><a href="board.html?cat=oc">자캐 소개 <span class="count">67</span></a></li>
+      <li><a href="board.html?cat=free">자유 게시판 <span class="count">82</span></a></li>
+    </ul>
+    <div class="sidebar-menu-label">커뮤니티</div>
+    <ul class="sidebar-menu">
+      <li><a href="#">이용 규칙</a></li>
+      <li><a href="#">운영진 소개</a></li>
+    </ul>
+  </aside>
+
+  <main id="main">
+    <div class="welcome-banner">
+      <div class="welcome-banner-inner">
+        <h1>오버월드에 오신 것을 환영합니다</h1>
+        <p>자신만의 오리지널 캐릭터로 역극을 나누는 공간입니다.<br>파트너를 구하고, 자캐를 소개하고, 함께 이야기를 만들어보세요.</p>
+        <a href="login.html" class="btn-join-main">지금 가입하기</a>
+      </div>
+    </div>
+
+    <div class="stats-bar">
+      <div class="stat-item"><div class="stat-num">142</div><div class="stat-label">등록 멤버</div></div>
+      <div class="stat-item"><div class="stat-num">38</div><div class="stat-label">진행 중 역극</div></div>
+      <div class="stat-item"><div class="stat-num">7</div><div class="stat-label">오늘의 새 글</div></div>
+      <div class="stat-item"><div class="stat-num">91</div><div class="stat-label">역극 모집 글</div></div>
+    </div>
+
+    <div class="notice-card">
+      <div class="card-header">
+        <div class="card-title accent">공지사항</div>
+        <a href="board.html?cat=notice" class="card-more">더보기</a>
+      </div>
+      <ul class="card-list">
+        <li><a href="post.html"><span class="tt">★ 6월 정기 역극 이벤트 안내</span><span class="dt">05.07</span></a></li>
+        <li><a href="post.html"><span class="tt">커뮤니티 이용 규칙 전문 (필독)</span><span class="dt">04.01</span></a></li>
+        <li><a href="post.html"><span class="tt">오버월드 오픈 안내</span><span class="dt">03.15</span></a></li>
+      </ul>
+    </div>
+
+    <div class="index-grid">
+      <div class="board-card">
+        <div class="card-header">
+          <div class="card-title primary">역극 모집</div>
+          <a href="board.html?cat=recruit" class="card-more">더보기</a>
+        </div>
+        <ul class="card-list">
+          <li><a href="post.html"><span class="tt">[현판] 형사×탐정 2:2 단편 구합니다</span><span class="cmt">[3]</span></a></li>
+          <li><a href="post.html"><span class="tt">[학원] 우등생×문제아 장편 1:1</span><span class="dt">어제</span></a></li>
+          <li><a href="post.html"><span class="tt">[판타지] 귀족가×평민 관계극</span><span class="dt">어제</span></a></li>
+          <li><a href="post.html"><span class="tt">[현대] 기억상실 설정 2캐 이상</span><span class="dt">2일전</span></a></li>
+          <li><a href="post.html"><span class="tt">[SF] 우주 배경 의사×파일럿</span><span class="dt">3일전</span></a></li>
+        </ul>
+      </div>
+
+      <div class="board-card">
+        <div class="card-header">
+          <div class="card-title primary">자캐 소개</div>
+          <a href="board.html?cat=oc" class="card-more">더보기</a>
+        </div>
+        <ul class="card-list">
+          <li><a href="post.html"><span class="tt">자캐 소개 / 사진작가 오린 23세</span><span class="cmt">[7]</span></a></li>
+          <li><a href="post.html"><span class="tt">자캐 소개 / 형사 하준 30대</span><span class="dt">어제</span></a></li>
+          <li><a href="post.html"><span class="tt">자캐 소개 / 카페 사장 유이</span><span class="dt">2일전</span></a></li>
+          <li><a href="post.html"><span class="tt">자캐 소개 / 대학원생 민규</span><span class="dt">3일전</span></a></li>
+          <li><a href="post.html"><span class="tt">자캐 소개 / 작곡가 서아</span><span class="dt">4일전</span></a></li>
+        </ul>
+      </div>
+
+      <div class="board-card">
+        <div class="card-header">
+          <div class="card-title primary">자유 게시판</div>
+          <a href="board.html?cat=free" class="card-more">더보기</a>
+        </div>
+        <ul class="card-list">
+          <li><a href="post.html"><span class="tt">역극 중 캐릭터에 꽂혀버린 순간</span><span class="cmt">[21]</span></a></li>
+          <li><a href="post.html"><span class="tt">처음 역극 참여 후기</span><span class="dt">어제</span></a></li>
+          <li><a href="post.html"><span class="tt">자캐 세계관 구성 팁 공유</span><span class="dt">2일전</span></a></li>
+          <li><a href="post.html"><span class="tt">파트너 구할 때 자기소개 방법</span><span class="dt">3일전</span></a></li>
+          <li><a href="post.html"><span class="tt">역극 분량 어느 정도가 적당?</span><span class="dt">4일전</span></a></li>
+        </ul>
+      </div>
+
+      <div class="board-card">
+        <div class="card-header">
+          <div class="card-title primary">전체 최신글</div>
+          <a href="board.html?cat=all" class="card-more">더보기</a>
+        </div>
+        <ul class="card-list">
+          <li><a href="post.html"><span class="tt">[모집] 형사×탐정 2:2 단편</span><span class="dt">방금</span></a></li>
+          <li><a href="post.html"><span class="tt">자캐 소개 / 사진작가 오린</span><span class="dt">2시간</span></a></li>
+          <li><a href="post.html"><span class="tt">역극 중 캐릭터에 꽂힌 순간</span><span class="dt">5시간</span></a></li>
+          <li><a href="post.html"><span class="tt">[모집] 우등생×문제아 1:1</span><span class="dt">어제</span></a></li>
+          <li><a href="post.html"><span class="tt">처음 역극 참여 후기</span><span class="dt">어제</span></a></li>
+        </ul>
+      </div>
+    </div>
+  </main>
+</div>
+
+</body>
+</html>
